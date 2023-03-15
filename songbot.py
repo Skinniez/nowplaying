@@ -6,6 +6,7 @@ from get_spotify_title import get_spotify_window_title, get_current_song
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -18,7 +19,7 @@ async def on_ready():
 @tasks.loop(seconds=10)
 async def announce_song():
     last_announced = None
-    channel_id = 1085525133160103977  # Replace with your desired channel ID
+    channel = bot.get_channel(CHANNEL_ID)  # Replace with your desired channel ID
 
     while True:
         title = get_spotify_window_title()
@@ -27,7 +28,6 @@ async def announce_song():
             current_song = f"{artist} - {name}"
 
             if current_song != last_announced:
-                channel = bot.get_channel(channel_id)
                 await channel.send(f"🎶 Now playing: **{current_song}**")
                 last_announced = current_song
 
